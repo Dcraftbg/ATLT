@@ -34,6 +34,9 @@ public:
 		}
 		strcpy_s(this->ptr, buf.size, buf.ptr);
 	}
+	ALCharBuf(ALCharBuf&& t) noexcept {
+		copy(t);
+	}
 	~ALCharBuf() {
 		if (ptr != nullptr) free(ptr);
 	}

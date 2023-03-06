@@ -3,3 +3,8 @@
 ################################################################################
 
 /.vs/ATLT
+/ATLT/ATLT.vcxproj
+/ATLT/ATLT.vcxproj.filters
+/ATLT/ATLT.vcxproj.user
+/TestProj
+/x64

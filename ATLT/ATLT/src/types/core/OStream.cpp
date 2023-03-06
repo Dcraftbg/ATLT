@@ -23,6 +23,11 @@ public:
 		strncpy_s(ptr, max_size,o.ptr, o.size);
 		size = o.size;
 	}
+	OStream(OStream&& t) noexcept {
+		resize(t.size);
+		strncpy_s(ptr, max_size, t.ptr, t.size);
+		size = t.size;
+	}
 	~OStream() {
 		if (ptr != nullptr) free(ptr);
 	}
