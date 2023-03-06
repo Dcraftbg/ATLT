@@ -81,7 +81,7 @@ public:
 			return;
 		}
 		
-		if (buf.size > max_size) {
+		if (buf.size >= max_size) {
 			resize(buf.size + 1);
 		}
 		size = buf.size;
@@ -93,7 +93,7 @@ public:
 			ATLT::pushException(new BasicException(__FUNCTION__, "Expected buf to be non-null", BASIC_EXCEPTION)); return;
 		}
 		uint64_t len = strlen(buf);
-		if (size+len > max_size) {
+		if (size+len >= max_size) {
 			resize(size+len+ 1);
 		}
 		strncat_s(ptr, max_size, buf, len);
@@ -106,7 +106,7 @@ public:
 			ATLT::pushException(new BasicException(__FUNCTION__, "Expected buf to be non-null", BASIC_EXCEPTION));
 			return;
 		}
-		if (size+buf.size> max_size) {
+		if (size+buf.size>= max_size) {
 			resize(size+buf.size + 1);
 		}
 		strncat_s(ptr, max_size, buf.ptr, buf.size);

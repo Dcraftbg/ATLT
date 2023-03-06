@@ -18,6 +18,7 @@ public:
 	ALString(const uint64_t& size) : buf(size) {}
 	ALString(const ALCharBuf& str) { buf.copy(str); }
 	ALString(const ALString& str) {buf.copy(str.buf);}
+	ALString(ALString&& str) noexcept { buf.copy(str.buf); }
 	ALString(const char* str) { buf.copy(str); }
 	~ALString() {}
 public:
@@ -69,25 +70,46 @@ public:
 	void operator=(const ALCharBuf& str) {
 		buf.copy(str);
 	}
+	// MAY_THROW_EXCEPTION 
+	void insert(const char* b) {
+		buf.insert(b);
+	}
+	// MAY_THROW_EXCEPTION 
+	void insert(const ALCharBuf& b) {
+		this->buf.insert(b);
+	}
+	void insert(const ALString& b) {
+		this->buf.insert(b.buf);
+	}
+	void copy(const ALString& b) {
+		this->buf.copy(b.buf);
+	}
+	void copy(const ALCharBuf& b) {
+		this->buf.copy(b);
+	}
+	void copy(const char* b) {
+		this->buf.copy(b);
+	}
+
 	ALString operator+(const ALString& s) {
 		if (s.buf.ptr == nullptr && buf.ptr != nullptr) { return ALString(s.buf); }
 		if (s.buf.ptr != nullptr && buf.ptr == nullptr) { return ALString(buf); }
 		if (s.buf.ptr == nullptr && buf.ptr == nullptr) { return ALString(); }
-		ALString out(s.buf.size + buf.size + 1);
+		static ALString out(s.buf.size + buf.size + 1);
 		out.zeroInit();
 		out.buf.uinsert(buf);
 		out.buf.uinsert(s.buf);
 		return out;
 	}
 	ALString operator+(const char* s) {
-		ALString out(buf.size + strlen(s) + 1);
+		static ALString out(buf.size + strlen(s) + 1);
 		out.zeroInit();
 		out.buf.uinsert(buf);
 		out.buf.uinsert(s);
 		return out;
 	}
 	ALString operator+(const char& c) {
-		ALString out(buf.size + 2);
+		static ALString out(buf.size + 2);
 		out.zeroInit();
 		out.buf.uinsert(buf);
 		out.buf.uinsert(c);
@@ -167,7 +189,8 @@ public:
 	}
 	void writestream(uint64_t size, char* data) {
 		buf.resize(iterate_index+size);
-		strcpy_s(buf.ptr + iterate_index, size, data);
+		char* np = buf.ptr;
+		strncpy_s(np,strlen(np), data, size);
 		iterate_index += size;
 	}
 	void writestream(OStream stream) {
